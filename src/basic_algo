@@ -1,0 +1,42 @@
+import numpy as np # linear algebra
+import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+import matplotlib.pyplot as plt # for plotting and visualozing data
+#our dataset
+fruits=pd.read_table('https://storage.googleapis.com/kagglesdsdata/datasets/9590/13660/fruit_data_with_colors.txt?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=gcp-kaggle-com%40kaggle-161607.iam.gserviceaccount.com%2F20211205%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20211205T190629Z&X-Goog-Expires=259199&X-Goog-SignedHeaders=host&X-Goog-Signature=53a9c04b75e3155c584ce6303f5a89c5a703106ac662dd6a166e0caa74fe510e2bbf1cfc4aae9d4470f92d9eab4f0cb699c191021164708b49b07c70a87c5221f85050c58fc8ab1853a59e0de842528841bf22310409739d7bf0e6fa13689dc5d7cef1697bcf0992148cc096c390ef9f77f9113922559ef28960d32da72e9747964bfdfc7166a83623677e92522d76c4c19626d7bede0fe03364c4281df7bbd3077b5ae02475dee5d996f01ee2a5d0b7b3ff39b85de8adf0f37c0debdc85c7045ef77767d758f97aee65d735fdd9741e02f9cca7410b9c94775ef779c5d531a4fb911122612adf220b025738b9c9864ab6f25d367468d53fe467a8fa2e93eee0')
+#checking first five rows of our dataset
+fruits.head()
+# create a mapping from fruit label value to fruit name to make results easier to interpret
+predct = dict(zip(fruits.fruit_label.unique(), fruits.fruit_name.unique()))   
+predct
+#checking how many unique fruit names are present in the dataset
+fruits['fruit_name'].value_counts()
+apple_data=fruits[fruits['fruit_name']=='apple']
+orange_data=fruits[fruits['fruit_name']=='orange']
+lemon_data=fruits[fruits['fruit_name']=='lemon']
+mandarin_data=fruits[fruits['fruit_name']=='mandarin']
+apple_data.head()
+mandarin_data.head()
+orange_data.head()
+lemon_data.head()
+plt.scatter(fruits['width'],fruits['height'])
+plt.scatter(fruits['mass'],fruits['color_score'])
+plt.plot(fruits['height'],label='Height')
+plt.plot(fruits['width'],label='Width')
+plt.legend()
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+X=fruits[['mass','width','height']]
+Y=fruits['fruit_label']
+X_train,X_test,y_train,y_test=train_test_split(X,Y,random_state=0)
+X_train.describe()
+X_test.describe()
+knn=KNeighborsClassifier()
+knn.fit(X_train,y_train)
+knn.score(X_test,y_test)
+#parameters of following function are mass,width and height
+#example1
+prediction1=knn.predict([['100','6.3','8']])
+predct[prediction1[0]]
+#example2
+prediction2=knn.predict([['300','7','10']])
+predct[prediction2[0]]
